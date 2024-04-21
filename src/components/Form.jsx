@@ -15,10 +15,10 @@ function Form() {
   const [check, setCheck] = useState(false);
   const [numofTimes, setNumOfTimes] = useState(0);
   const [showContribute, setShowContribute] = useState(false);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState(false);
   const [experience, setExperience] = useState(true);
   const [success, setSuccess] = useState("");
-  const [showSuccess, setShowSuccess] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(false);
   
   const { globalState, setGlobalState } = useContext(ModalContext);
 
@@ -30,6 +30,8 @@ function Form() {
       setExperience(false);
       setShowContribute(false);
       setGlobalState({ ...globalState, couponError: "" });
+      setShowSuccess(true)
+      // setLoading(false)
       setCheck(true);
     }
   }, [globalState.couponSuccess]);
@@ -137,31 +139,68 @@ function Form() {
     }
 
     try {
-
-      // make request to the evaluator api
+      // get user details and number of times they have used the application
+      setLoading(true);
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/${import.meta.env.VITE_API_KEY}/`,
+        "https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=experienced_service_user_details",
         {
-          title,
-          content,
+          email,
+          product_number: "UXLIVINGLAB001",
+          occurrences: 1,
         }
       );
 
-      setLoading(false);
+      if (response.data.success) {
+        
+
+        const numberUsed = response.data.response[0].used_time;
+        setNumOfTimes(numberUsed);
+
+        // if they have used more than four times, show contribute button
+        if (numberUsed > 4) {
+          // show contribute button
+          setShowContribute(true);
+          setExperience(false);
+          setCheck(false);
+
+          return;
+        } else {
+          // else make request to evaluator api
+          try {
+
+
+            const response = await axios.post(
+              `${import.meta.env.VITE_BASE_URL}/${import.meta.env.VITE_API_KEY}/`,
+              {
+                title,
+                content,
+              }
+            );
       
-      // remove errors in UI if they exist
-      setError('');
-      setGlobalState({
-        ...globalState,
-        couponError: "",
-        couponSuccess: "",
-      });
-      setResult(response.data);
-      
+            setLoading(false);
+            
+            // remove errors in UI if they exist
+            setError('');
+            setGlobalState({
+              ...globalState,
+              couponError: "",
+              couponSuccess: "",
+            });
+            setResult(response.data);
+            
+          } catch (error) {
+            setLoading(false);
+            setError("Something went wrong..");
+          }
+        }
+      } 
     } catch (error) {
       setLoading(false);
-      setError("Something went wrong..");
+
+      setError(error.response.data.message);
     }
+
+   
   };
 
   const handleContribute = (e) => {
@@ -209,10 +248,11 @@ const handleTryAgain = ()=>{
   return (
     <div>
       <form className="flex flex-col gap-10">
-        <input
+       <input
           type="text"
           placeholder="Topic Name"
           className="border border-gray-300 block w-full rounded-lg py-2 lg:py-3 px-1"
+          value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
         <textarea
@@ -220,12 +260,14 @@ const handleTryAgain = ()=>{
           placeholder="Content"
           required
           className="border border-gray-300 block w-full rounded-lg px-1"
+          value={content}
           onChange={(e) => setContent(e.target.value)}
         ></textarea>
         <input
           type="text"
           placeholder="Enter your email address"
           required
+          value={email}
           className="border border-gray-300 block  w-full rounded-lg py-2 lg:py-3 px-1"
           onChange={(e) => setEmail(e.target.value)}
         />
