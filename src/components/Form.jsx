@@ -138,6 +138,8 @@ function Form() {
       return;
     }
 
+    
+
     try {
       // get user details and number of times they have used the application
       setLoading(true);
@@ -156,8 +158,8 @@ function Form() {
         const numberUsed = response.data.response[0].used_time;
         setNumOfTimes(numberUsed);
 
-        // if they have used more than four times, show contribute button
-        if (numberUsed > 4) {
+        // if they have used more than four times and don't have a coupon, show contribute button
+        if (!globalState.couponSuccess && numberUsed > 4) {
           // show contribute button
           setShowContribute(true);
           setExperience(false);
@@ -187,6 +189,9 @@ function Form() {
               couponSuccess: "",
             });
             setResult(response.data);
+
+            // reset coupon to empty if it was used successfully to make the request
+            setGlobalState({...globalState, couponSuccess:''})
             
           } catch (error) {
             setLoading(false);
@@ -238,10 +243,19 @@ const handleTryAgain = ()=>{
   setContent('');
  
   setResult(null);
+}
 
- 
- 
-  
+const handleReset = (e)=>{
+  e.preventDefault();
+  setContent('');
+  setTitle("");
+  setResult('');
+  setEmail('')
+}
+
+const handleClose = (e)=>{
+  e.preventDefault();
+  window.close();
 }
 
 
@@ -285,10 +299,10 @@ const handleTryAgain = ()=>{
         )}
 
         <div className="buttons flex justify-center items-center gap-2 lg:gap-3 ">
-          <button className="bg-[#FF0000] text-white text-sm lg:text-lg px-4 py-2 rounded-md flex items-center justify-center font-semibold">
+          <button className="bg-[#FF0000] text-white text-sm lg:text-lg px-4 py-2 rounded-md flex items-center justify-center font-semibold" onClick={handleClose}>
             Close
           </button>
-          <button className="bg-[#D6BB41] text-white py-2 text-sm lg:text-lg px-3 sm:px-8 rounded-md flex items-center justify-center font-semibold">
+          <button className="bg-[#D6BB41] text-white py-2 text-sm lg:text-lg px-3 sm:px-8 rounded-md flex items-center justify-center font-semibold" onClick={handleReset}>
             Reset
           </button>
 
