@@ -69,7 +69,7 @@ function CouponModal() {
   return (
     <>
       <div className="fixed top-0 left-0 w-full bg-gray-400 opacity-50 z-[1000] h-full"></div>
-      <div className="fixed bg-white z-[1001] w-1/2 max-w-[80%] h-fit mx-auto left-[25%] rounded-lg top-[25%]">
+      <div className="fixed bg-white z-[1001] w-[90%] sm:w-1/2 sm:max-w-[80%] h-fit mx-auto left-[5%] sm:left-[25%] rounded-lg top-[25%]">
         <form className="py-10 sm:px-5 px-1">
           <h2 className="text-center lg:text-4xl font-semibold">
             Redeem Coupon
@@ -86,14 +86,14 @@ function CouponModal() {
           />
           <div className="buttons flex flex-col sm:flex-row  justify-center items-center gap-3 mt-8">
             <button
-              className="bg-[#4caf50] hover:bg-[#c36]  text-white py-2  px-3 sm:px-10 text-sm lg:text-lg rounded-md flex gap-3 items-center font-semibold"
+              className="bg-[#4caf50] text-white py-2  px-3 sm:px-10 text-sm lg:text-lg rounded-md flex gap-3 items-center font-semibold"
               onClick={handleRedeem}
             >
               {
                 loading &&<Oval
                 visible={true}
-                height="15"
-                width="15"
+                height="18"
+                width="18"
                 color="white"
                 ariaLabel="oval-loading"
                 wrapperStyle={{}}
@@ -104,7 +104,7 @@ function CouponModal() {
             Redeem
             </button>
             <button
-              className="bg-[#4caf50] hover:bg-[#c36] text-white py-2  px-3 sm:px-10 text-sm lg:text-lg rounded-md flex gap-3 items-center font-semibold"
+              className="bg-[#4caf50] hover:bg-[#c36] text-white py-2   px-10 text-sm lg:text-lg rounded-md flex gap-3 items-center font-semibold"
               onClick={handleCloseModal}
             >
               Close

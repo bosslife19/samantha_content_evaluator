@@ -33,10 +33,10 @@ function Result({ result, email }) {
             import.meta.env.VITE_API_KEY
           }/?type=send-email`, {
             email,
-            name:"Woko David",
+            name:"Samantha Content Evaluator",
             fromName:"Samantha Content Evaluator",
-            fromEmail : "wokodavid001@gmail.com",
-            subject : "Result",
+            fromEmail : "uxlivinglab@dowellresearch.sg",
+            subject : "Result from Samantha Content Evaluator",
             body : 
             `<!DOCTYPE html>
             <html lang="en">
@@ -66,7 +66,7 @@ function Result({ result, email }) {
                     "
                   >
                     <img
-                      src="https://dowellfileuploader.uxlivinglab.online/hr/logo-2-min-min.png"
+                      src="https://www.uxlivinglab.org/wp-content/uploads/2023/08/logo-e1531386713115.webp"
                       height="140px"
                       width="140px"
                       style="display: block; margin: 0 auto;"

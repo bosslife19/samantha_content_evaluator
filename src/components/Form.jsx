@@ -15,7 +15,7 @@ function Form() {
   const [check, setCheck] = useState(false);
   const [numofTimes, setNumOfTimes] = useState(0);
   const [showContribute, setShowContribute] = useState(false);
-  const [result, setResult] = useState(false);
+  const [result, setResult] = useState(null);
   const [experience, setExperience] = useState(true);
   const [success, setSuccess] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
@@ -31,7 +31,7 @@ function Form() {
       setShowContribute(false);
       setGlobalState({ ...globalState, couponError: "" });
       setShowSuccess(true)
-      // setLoading(false)
+      setLoading(false)
       setCheck(true);
     }
   }, [globalState.couponSuccess]);
