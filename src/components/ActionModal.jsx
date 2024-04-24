@@ -56,6 +56,7 @@ function ContributeModal({
   }, [numofTimes, globalState.couponSuccess]);
 
   const handleCancel = () => {
+    setGlobalState({...globalState,couponError:''})
     setShowActionModal(false);
   };
 
@@ -259,7 +260,7 @@ function ContributeModal({
             : "flex flex-col justify-center items-center fixed text-center bg-white z-[1500] w-[90%] sm:w-1/2 sm:max-w-[80%] mx-auto h-full  rounded-lg top-[70px] sm:top-5 py-10 overflow-y-auto"
         }
       >
-        <div className="mt-[300px] sm:mt-[100px]">
+        <div className={result && 'mt-[300px] sm:mt-[100px]'}>
           <div className="logo">
             <img
               src="/images/samanthalogo.png"
@@ -321,7 +322,7 @@ function ContributeModal({
           </div>
 
           {contribute && (
-            <div className="flex gap-3 mt-10 justify-center items-center">
+            <div className="flex gap-3 mt-10 justify-center items-center border-t border-gray-200 shadow-md py-2">
               <p className="text-lg font-normal">Do you have a coupon?</p>
               <button
                 className="p-3 text-white bg-green-500 rounded-lg"

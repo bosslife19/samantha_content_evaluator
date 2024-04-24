@@ -82,7 +82,7 @@ function Form() {
         setLoading(false);
 
         const numberUsed = response.data.response[0].used_time;
-        console.log(numberUsed)
+       
 
        setNumOfTimes(numberUsed)
         
