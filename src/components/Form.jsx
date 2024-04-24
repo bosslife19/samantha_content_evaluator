@@ -5,9 +5,10 @@ import Result from "./Result";
 import { Oval } from "react-loader-spinner";
 import { ModalContext } from "../App";
 import data from "../SamantaContentEvaluator_2.json";
+import ActionModal from "./ActionModal";
 
 function Form() {
-  const [title, setTitle] = useState("Topic Name");
+  const [title, setTitle] = useState("Topic");
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
   const [email, setEmail] = useState("");
@@ -19,22 +20,24 @@ function Form() {
   const [experience, setExperience] = useState(true);
   const [success, setSuccess] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
-  
+  const [showTimesUsed, setShowTimesUsed] = useState(false);
+  const [showActionModal, setShowActionModal] = useState(false);
+  const[cancel, setCancel] = useState(false)
   const { globalState, setGlobalState } = useContext(ModalContext);
 
   const scaleData = data.urls;
 
-  useEffect(() => {
-    // show check button if coupon is valid
-    if (globalState.couponSuccess) {
-      setExperience(false);
-      setShowContribute(false);
-      setGlobalState({ ...globalState, couponError: "" });
-      setShowSuccess(true)
-      setLoading(false)
-      setCheck(true);
-    }
-  }, [globalState.couponSuccess]);
+  // useEffect(() => {
+  //   // show check button if coupon is valid
+  //   if (globalState.couponSuccess) {
+  //     setExperience(false);
+  //     setShowContribute(false);
+  //     setGlobalState({ ...globalState, couponError: "" });
+  //     setShowSuccess(true);
+  //     setLoading(false);
+  //     setCheck(true);
+  //   }
+  // }, [globalState.couponSuccess]);
 
   const handleExperience = async (e) => {
     e.preventDefault();
@@ -44,6 +47,15 @@ function Form() {
     if (!email) {
       setLoading(false);
       setError("The email field is required");
+      return;
+    }
+
+    const numOfWords = content.trim().split(/\s+/);
+
+    // check if content is less than 50
+    if (numOfWords.length < 60) {
+      setLoading(false);
+      setError("Content must have at least 60 words.");
       return;
     }
 
@@ -70,20 +82,37 @@ function Form() {
         setLoading(false);
 
         const numberUsed = response.data.response[0].used_time;
-        setNumOfTimes(numberUsed);
+        console.log(numberUsed)
+
+       setNumOfTimes(numberUsed)
+        
 
         // if they have used more than four times, show contribute button
-        if (numberUsed > 4) {
+        if ((numberUsed === 4) | (numberUsed == 5)) {
           // show contribute button
           setShowContribute(true);
-          setExperience(false);
-          setCheck(false);
+          
+          setCheck(true);
+         
+          setLoading(false);
+          setShowActionModal(true);
 
           return;
+        } else if (numberUsed > 5) {
+          setShowContribute(true);
+          setCancel(true);
+          setCheck(false);
+          setGlobalState({ ...globalState, showTimesUsed: true });
+          setLoading(false);
+          setShowActionModal(true);
         } else {
           // else show check button
-          setExperience(false);
+         
+          setShowContribute(false);
           setCheck(true);
+          setGlobalState({ ...globalState, showTimesUsed: true });
+          setLoading(false);
+          setShowActionModal(true);
         }
       } else {
         // if user does not exist, register user
@@ -97,8 +126,10 @@ function Form() {
           );
           setLoading(false);
           setCheck(true);
-          setExperience(false);
-          setNumOfTimes(1);
+          
+          
+
+          setShowActionModal(true);
         } catch (error) {
           setLoading(false);
           setError(error.response.data.message);
@@ -110,163 +141,159 @@ function Form() {
       setError(error.response.data.message);
     }
   };
-  const handleCheck = async (e) => {
-    e.preventDefault();
-    setError("");
-    setShowSuccess(false);
-    setResult(null)
-    setLoading(true);
+  // const handleCheck = async (e) => {
+  //   e.preventDefault();
+  //   setError("");
+  //   setShowSuccess(false);
+  //   setResult(null);
+  //   setShowTimesUsed(false);
+  //   setLoading(true);
 
-    if (!content) {
-      setLoading(false);
-      setError("The content field is required");
-      return;
-    }
+  //   if (!content) {
+  //     setLoading(false);
+  //     setError("The content field is required");
+  //     return;
+  //   }
 
-    if (!email) {
-      setLoading(false);
-      setError("The email field is required");
-      return;
-    }
-    
-    const numOfWords = content.trim().split(/\s+/);
+  //   if (!email) {
+  //     setLoading(false);
+  //     setError("The email field is required");
+  //     return;
+  //   }
 
-    // check if content is less than 50
-    if (numOfWords.length < 60) {
-      setLoading(false);
-      setError("Content must have at least 60 words.");
-      return;
-    }
+  //   const numOfWords = content.trim().split(/\s+/);
 
-    
+  //   // check if content is less than 50
+  //   if (numOfWords.length < 60) {
+  //     setLoading(false);
+  //     setError("Content must have at least 60 words.");
+  //     return;
+  //   }
 
-    try {
-      // get user details and number of times they have used the application
-      setLoading(true);
-      const response = await axios.post(
-        "https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=experienced_service_user_details",
-        {
-          email,
-          product_number: "UXLIVINGLAB001",
-          occurrences: 1,
-        }
-      );
+  //   try {
+  //     // get user details and number of times they have used the application
+  //     setLoading(true);
+  //     const response = await axios.post(
+  //       "https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=experienced_service_user_details",
+  //       {
+  //         email,
+  //         product_number: "UXLIVINGLAB001",
+  //         occurrences: 1,
+  //       }
+  //     );
 
-      if (response.data.success) {
-        
+  //     if (response.data.success) {
+  //       const numberUsed = response.data.response[0].used_time;
+  //       setNumOfTimes(numberUsed);
 
-        const numberUsed = response.data.response[0].used_time;
-        setNumOfTimes(numberUsed);
+  //       // if they have used more than five times and don't have a coupon, show contribute button
+  //       if (!globalState.couponSuccess && numberUsed > 5) {
+  //         // show contribute button
+  //         setLoading(false);
+  //         setShowContribute(true);
+  //         setExperience(false);
+  //         setCheck(false);
+  //         setShowTimesUsed(true);
 
-        // if they have used more than four times and don't have a coupon, show contribute button
-        if (!globalState.couponSuccess && numberUsed > 4) {
-          // show contribute button
-          setShowContribute(true);
-          setExperience(false);
-          setCheck(false);
+  //         return;
+  //       } else {
+  //         // else make request to evaluator api
+  //         try {
+  //           const response = await axios.post(
+  //             `${import.meta.env.VITE_BASE_URL}/${
+  //               import.meta.env.VITE_API_KEY
+  //             }/`,
+  //             {
+  //               title,
+  //               content,
+  //             }
+  //           );
 
-          return;
-        } else {
-          // else make request to evaluator api
-          try {
+  //           // remove errors in UI if they exist
+  //           setError("");
+  //           setGlobalState({
+  //             ...globalState,
+  //             couponError: "",
+  //             couponSuccess: "",
+  //           });
+  //           setResult(response.data);
+  //           console.log(response.data);
 
+  //           // reset coupon to empty if it was used successfully to make the request
+  //           setGlobalState({ ...globalState, couponSuccess: "" });
 
-            const response = await axios.post(
-              `${import.meta.env.VITE_BASE_URL}/${import.meta.env.VITE_API_KEY}/`,
-              {
-                title,
-                content,
-              }
-            );
-      
-            setLoading(false);
-            
-            // remove errors in UI if they exist
-            setError('');
-            setGlobalState({
-              ...globalState,
-              couponError: "",
-              couponSuccess: "",
-            });
-            setResult(response.data);
+  //           // update number of times used for the user
+  //           await axios.get(
+  //             `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=update_user_usage&product_number=UXLIVINGLAB001&email=wokodavid002@gmail.com&occurrences=5https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=update_user_usage&product_number=UXLIVINGLAB001&email=${email}&occurrences=${
+  //               numofTimes + 1
+  //             }`
+  //           );
+  //           setLoading(false);
+  //           setShowTimesUsed(true);
+  //         } catch (error) {
+  //           setLoading(false);
+  //           setError("Something went wrong..");
+  //         }
+  //       }
+  //     }
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.log(error);
+  //   }
+  // };
 
-            // reset coupon to empty if it was used successfully to make the request
-            setGlobalState({...globalState, couponSuccess:''})
-            
-          } catch (error) {
-            setLoading(false);
-            setError("Something went wrong..");
-          }
-        }
-      } 
-    } catch (error) {
-      setLoading(false);
+  // const handleContribute = (e) => {
+  //   e.preventDefault();
+  //   // redirect to payment page
+  //   window.location.href =
+  //     "https://dowellpay.online/contribute-payment/?product_number=UXLIVINGLAB001";
+  // };
 
-      setError(error.response.data.message);
-    }
-
-   
-  };
-
-  const handleContribute = (e) => {
-    e.preventDefault();
-    // redirect to payment page
-    window.location.href =
-      "https://dowellpay.online/contribute-payment/?product_number=UXLIVINGLAB001";
-  };
-
-  const openCouponModal = (e) => {
-    e.preventDefault();
-    // open modal by accessing the global state 
-    globalState.setOpenModal(true);
-  };
-
-
-const handleScale = async (item)=>{
   
-  try {
-    const res = await axios.get(item);
-    if(res.data.success){
-      setSuccess('Thank you for using our application. We really appreciate your feedback')
-    }
 
-    
-    
-  } catch (error) {
-    console.log(error.message)
-    // setError(error.message);
-   
-  }
- 
-}
-const handleTryAgain = ()=>{
-  setContent('');
- 
-  setResult(null);
-}
+  // const handleScale = async (item) => {
+  //   try {
+  //     const res = await axios.get(item);
+  //     if (res.data.success) {
+  //       setSuccess(
+  //         "Thank you for using our application. We really appreciate your feedback"
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.log(error.message);
+  //     // setError(error.message);
+  //   }
+  // };
+  // const handleTryAgain = () => {
+  //   setContent("");
 
-const handleReset = (e)=>{
-  e.preventDefault();
-  setContent('');
-  setTitle("");
-  setResult('');
-  setEmail('')
-}
+  //   setResult(null);
+  // };
 
-const handleClose = (e)=>{
-  e.preventDefault();
-  window.close();
-}
+  const handleReset = (e) => {
+    setGlobalState({
+      ...globalState,
+      couponError: "",
+    });
+    e.preventDefault();
+    setContent("");
+    setTitle("");
+    setResult("");
+    setEmail("");
+  };
 
+  const handleClose = (e) => {
+    e.preventDefault();
+    window.close();
+  };
 
   return (
     <div>
       <form className="flex flex-col gap-10">
-       <input
+        <input
           type="text"
           placeholder="Topic Name"
           className="border border-gray-300 block w-full rounded-lg py-2 lg:py-3 px-1"
-          value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
         <textarea
@@ -286,50 +313,27 @@ const handleClose = (e)=>{
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        {check && (
-          <div className="bg-gray-300 text-lg p-3">
-            <p>You have used samanta content evaluator {numofTimes} times</p>
-          </div>
-        )}
+        
 
-        {showContribute && (
-          <div className="bg-gray-300 text-lg p-3">
-            <p>You have used samanta content evaluator {numofTimes} times</p>
-          </div>
-        )}
-
-        <div className="buttons flex justify-center items-center gap-2 lg:gap-3 ">
-          <button className="bg-[#FF0000] text-white text-sm lg:text-lg px-4 py-2 rounded-md flex items-center justify-center font-semibold" onClick={handleClose}>
+        <div className="buttons flex flex-wrap justify-center items-center gap-2 lg:gap-3 ">
+          <button
+            className="bg-[#FF0000] text-white text-sm lg:text-lg px-4 py-2 rounded-md flex items-center justify-center font-semibold"
+            onClick={handleClose}
+          >
             Close
           </button>
-          <button className="bg-[#D6BB41] text-white py-2 text-sm lg:text-lg px-3 sm:px-8 rounded-md flex items-center justify-center font-semibold" onClick={handleReset}>
+          <button
+            className="bg-[#D6BB41] text-white py-2 text-sm lg:text-lg px-3 sm:px-8 rounded-md flex items-center justify-center font-semibold"
+            onClick={handleReset}
+          >
             Reset
           </button>
 
-          {check && (
-            <button
-              onClick={handleCheck}
-              className="bg-[#005734] text-white py-2  px-3 text-sm lg:text-lg sm:px-10 rounded-md flex gap-3 items-center justify-center font-semibold"
-            >
-              {loading && (
-                <Oval
-                  visible={true}
-                  height="15"
-                  width="15"
-                  color="white"
-                  ariaLabel="oval-loading"
-                  wrapperStyle={{}}
-                  wrapperClass=""
-                />
-              )}
 
-              <i className="fas fa-search text-white w-3 h-3"></i>
-              <span className>check</span>
-            </button>
-          )}
           {experience && (
             <button
               onClick={handleExperience}
+              disabled={loading}
               className="bg-[#005734] text-white py-2  px-3 text-sm lg:text-lg sm:px-10 rounded-md flex gap-3 items-center font-semibold justify-center"
             >
               {loading && (
@@ -348,70 +352,45 @@ const handleClose = (e)=>{
             </button>
           )}
 
-          {showContribute && (
+          {/* {showContribute && (
             <button
               className="bg-[#005734] text-white py-2  px-3 sm:px-10 text-sm lg:text-lg rounded-md flex gap-3 items-center font-semibold"
               onClick={handleContribute}
             >
               Contribute
             </button>
-          )}
+          )} */}
         </div>
 
-        {error && <p className="text-red-500 text-lg font-bold">{error}</p>}
-        {success && <p className="text-green-500 text-lg font-bold">{success}</p>}
-        {globalState.couponError && (
-          <p className="text-red-500 text-lg font-bold">
-            {globalState.couponError}
-          </p>
-        )}
-        {globalState.couponSuccess && (
-          <p
-            className={
-              showSuccess ? "text-green-500 text-lg font-bold" : "hidden"
-            }
-          >
-            {globalState.couponSuccess}
-          </p>
-        )}
-        {showContribute && (
-          <div className="flex gap-3 mt-10 justify-center items-center">
-            <p className="text-lg font-normal">Do you have a coupon?</p>
-            <button
-              className="p-3 text-white bg-green-500 rounded-lg"
-              onClick={openCouponModal}
-            >
-              Yes
-            </button>
-          </div>
-        )}
+        
+        
+       
       </form>
-      {result && <Result result={result} email={email} />}
+      
 
-      {result && (
-        <div className="scale my-8">
-          <p className="text-gray-800 sm:text-lg text-center">
-            On a scale of 0-10, how likely are you to recommend the product to a
-            friend or colleague?
-          </p>
-          <div className="scaleButtons flex flex-wrap gap-1">
-            {scaleData.map((item, index) => (
-              <button
-                key={index}
-                className="py-1 px-6 text-white bg-green-500 rounded-lg mt-2"
-                onClick={()=>handleScale(item.item[0])}
-              >
-                {index}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      
 
-      {result && (
-        <button className="bg-[#005734] text-white py-2  px-3 sm:px-10 text-sm lg:text-lg rounded-sm flex gap-3 items-center font-semibold mx-auto mt-4" onClick={handleTryAgain}>
-          Try Again
-        </button>
+     
+      {showActionModal && (
+        <ActionModal
+          check={check}
+          setCheck={setCheck}
+          contribute={showContribute}
+          setShowContribute={setShowContribute}
+          setShowActionModal={setShowActionModal}
+          setContent={setContent}
+          content={content}
+          title={title}
+          email={email}
+          showTimesUsed={showTimesUsed}
+          setShowTimesUsed={setShowTimesUsed}
+          result={result}
+          setResult={setResult}
+          numofTimes={numofTimes}
+          setNumOfTimes={setNumOfTimes}
+          cancel={cancel}
+          setCancel={setCancel}
+        />
       )}
     </div>
   );

@@ -34,7 +34,7 @@ function CouponModal() {
             setLoading(false)
               setGlobalState({
                   ...globalState,
-                  couponSuccess: 'You have one more experience left'
+                  couponSuccess: 'You have got one free trial susscessfully'
               })
               globalState.setOpenModal(false);
           } else if(response.data.message.includes('available')){

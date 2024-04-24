@@ -51,8 +51,7 @@ function Result({ result, email }) {
                   background-color: #ffffff;
                   margin: 0;
                   padding: 0;
-                  display: flex;
-                  justify-content: center;
+                  width:100%
                 "
               >
                 <div style="width: 100%; background-color: #ffffff;">
@@ -151,25 +150,25 @@ function Result({ result, email }) {
   };
 
   return (
-    <div className="mt-20 px-5 pt-10 pb-5 border border-gray-100 shadow-lg">
-      <h2 className="text-2xl text-center text-semibold mb-3">
+    <div className="mt-8 px-5 pb-5 border border-gray-100 shadow-lg">
+      <h2 className="text-xl text-center text-semibold mb-3">
         Result From Samantha
       </h2>
 
       <div className="result border border-gray-400 rounded-md">
-        <div className="border-b border-gray-400 py-3 px-3">
-          <p className="sm:text-xl">
-            The Content is
+        <div className="border-b border-gray-400 py-1">
+          <p className="text-md sm:text-lg relative lg:right-14">
+            The Content is{' '}
             <span className="font-bold">{result["AI Check"]}</span>
           </p>
         </div>
         <div className="border-b border-gray-400 flex gap-3 py-3 px-3">
-          <p className="sm:text-xl">Plagiarized:</p>
+          <p className="sm:text-lg">Plagiarized:</p>
           <p className="font-bold">{result.Plagiarised}</p>
         </div>
         <div className="border-b border-gray-400 flex gap-3 py-3 px-3">
-          <p className="sm:text-xl">Creative:</p>
-          <p className="font-bold sm:text-xl">{result.Creative}</p>
+          <p className="sm:text-lg">Creative:</p>
+          <p className="font-bold sm:text-lg">{result.Creative}</p>
         </div>
       </div>
 
