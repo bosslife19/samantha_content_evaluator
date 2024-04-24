@@ -141,134 +141,7 @@ function Form() {
       setError(error.response.data.message);
     }
   };
-  // const handleCheck = async (e) => {
-  //   e.preventDefault();
-  //   setError("");
-  //   setShowSuccess(false);
-  //   setResult(null);
-  //   setShowTimesUsed(false);
-  //   setLoading(true);
-
-  //   if (!content) {
-  //     setLoading(false);
-  //     setError("The content field is required");
-  //     return;
-  //   }
-
-  //   if (!email) {
-  //     setLoading(false);
-  //     setError("The email field is required");
-  //     return;
-  //   }
-
-  //   const numOfWords = content.trim().split(/\s+/);
-
-  //   // check if content is less than 50
-  //   if (numOfWords.length < 60) {
-  //     setLoading(false);
-  //     setError("Content must have at least 60 words.");
-  //     return;
-  //   }
-
-  //   try {
-  //     // get user details and number of times they have used the application
-  //     setLoading(true);
-  //     const response = await axios.post(
-  //       "https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=experienced_service_user_details",
-  //       {
-  //         email,
-  //         product_number: "UXLIVINGLAB001",
-  //         occurrences: 1,
-  //       }
-  //     );
-
-  //     if (response.data.success) {
-  //       const numberUsed = response.data.response[0].used_time;
-  //       setNumOfTimes(numberUsed);
-
-  //       // if they have used more than five times and don't have a coupon, show contribute button
-  //       if (!globalState.couponSuccess && numberUsed > 5) {
-  //         // show contribute button
-  //         setLoading(false);
-  //         setShowContribute(true);
-  //         setExperience(false);
-  //         setCheck(false);
-  //         setShowTimesUsed(true);
-
-  //         return;
-  //       } else {
-  //         // else make request to evaluator api
-  //         try {
-  //           const response = await axios.post(
-  //             `${import.meta.env.VITE_BASE_URL}/${
-  //               import.meta.env.VITE_API_KEY
-  //             }/`,
-  //             {
-  //               title,
-  //               content,
-  //             }
-  //           );
-
-  //           // remove errors in UI if they exist
-  //           setError("");
-  //           setGlobalState({
-  //             ...globalState,
-  //             couponError: "",
-  //             couponSuccess: "",
-  //           });
-  //           setResult(response.data);
-  //           console.log(response.data);
-
-  //           // reset coupon to empty if it was used successfully to make the request
-  //           setGlobalState({ ...globalState, couponSuccess: "" });
-
-  //           // update number of times used for the user
-  //           await axios.get(
-  //             `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=update_user_usage&product_number=UXLIVINGLAB001&email=wokodavid002@gmail.com&occurrences=5https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=update_user_usage&product_number=UXLIVINGLAB001&email=${email}&occurrences=${
-  //               numofTimes + 1
-  //             }`
-  //           );
-  //           setLoading(false);
-  //           setShowTimesUsed(true);
-  //         } catch (error) {
-  //           setLoading(false);
-  //           setError("Something went wrong..");
-  //         }
-  //       }
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.log(error);
-  //   }
-  // };
-
-  // const handleContribute = (e) => {
-  //   e.preventDefault();
-  //   // redirect to payment page
-  //   window.location.href =
-  //     "https://dowellpay.online/contribute-payment/?product_number=UXLIVINGLAB001";
-  // };
-
   
-
-  // const handleScale = async (item) => {
-  //   try {
-  //     const res = await axios.get(item);
-  //     if (res.data.success) {
-  //       setSuccess(
-  //         "Thank you for using our application. We really appreciate your feedback"
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.log(error.message);
-  //     // setError(error.message);
-  //   }
-  // };
-  // const handleTryAgain = () => {
-  //   setContent("");
-
-  //   setResult(null);
-  // };
 
   const handleReset = (e) => {
     setGlobalState({
@@ -392,6 +265,7 @@ function Form() {
           setCancel={setCancel}
         />
       )}
+       {error && <p className="text-red-500 text-lg font-bold">{error}</p>}
     </div>
   );
 }

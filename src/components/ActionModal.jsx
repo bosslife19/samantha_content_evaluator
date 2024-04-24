@@ -255,11 +255,11 @@ function ContributeModal({
       <div
         className={
           !result
-            ? "flex flex-col justify-center items-center fixed text-center bg-white z-[1500] w-[90%] sm:w-1/2 sm:max-w-[80%] mx-auto h-fit  rounded-lg top-10 sm:top-5 py-10 overflow-y-auto"
-            : "flex flex-col justify-center items-center fixed text-center bg-white z-[1500] w-[90%] sm:w-1/2 sm:max-w-[80%] mx-auto h-full  rounded-lg top-10 sm:top-5 py-10 overflow-y-auto"
+            ? "flex flex-col justify-center items-center fixed text-center bg-white z-[1500] w-[90%] sm:w-1/2 sm:max-w-[80%] mx-auto h-fit  rounded-lg top-[70px] sm:top-5 py-10 overflow-y-auto"
+            : "flex flex-col justify-center items-center fixed text-center bg-white z-[1500] w-[90%] sm:w-1/2 sm:max-w-[80%] mx-auto h-full  rounded-lg top-[70px] sm:top-5 py-10 overflow-y-auto"
         }
       >
-        <div className="">
+        <div className="mt-[300px] sm:mt-[100px]">
           <div className="logo">
             <img
               src="/images/samanthalogo.png"
@@ -314,7 +314,7 @@ function ContributeModal({
           </div>
 
           <div
-            className="close cursor-pointer text-gray-300 absolute right-[50px] top-[50px] font-bold"
+            className="close cursor-pointer text-gray-300 absolute right-[30px] sm:right-[50px] top-[30px] sm:top-[50px] font-bold"
             onClick={handleCancel}
           >
             X
