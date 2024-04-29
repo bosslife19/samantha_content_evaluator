@@ -157,7 +157,7 @@ function Result({ result, email }) {
 
       <div className="result border border-gray-400 rounded-md">
         <div className="border-b border-gray-400 py-1">
-          <p className="text-md sm:text-lg relative lg:right-14">
+          <p className="text-md sm:text-lg relative sm:ml-[-250px]">
             The Content is{' '}
             <span className="font-bold">{result["AI Check"]}</span>
           </p>
